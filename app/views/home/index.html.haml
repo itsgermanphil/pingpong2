@@ -1,0 +1,3 @@
+%h1 Player home screen
+- @games.each do |game|
+  = render :partial => 'game', :locals => { :game => game }

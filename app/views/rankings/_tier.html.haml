@@ -1,0 +1,3 @@
+%h2 #{tier.name}
+- tier.players.each do |player|
+  = render :partial => 'player', :locals => { :player => player }
