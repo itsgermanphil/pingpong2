@@ -1,5 +1,9 @@
 class HomeController < ApplicationController
+
+  before_filter :require_user
+
   def index
-    @games = Player.find_by_name("Michael").games(Round.active)
+    @games = current_user.games(Round.active)
   end
+
 end

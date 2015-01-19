@@ -1,4 +1,9 @@
 Rails.application.routes.draw do
+
+  get '/auth/500px/callback' => 'sessions#create'
+  get '/login' => 'sessions#login'
+  get '/logout' => 'sessions#logout'
+
   get 'rankings/index'
 
   get 'home/index'

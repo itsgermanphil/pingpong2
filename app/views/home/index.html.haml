@@ -1,3 +1,4 @@
-%h1 Player home screen
+%h1 Player home screen for #{current_user.name}
+
 - @games.each do |game|
   = render :partial => 'game', :locals => { :game => game }
