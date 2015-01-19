@@ -36,17 +36,9 @@ class Round < ActiveRecord::Base
     tiers.each do |tier|
       tier.players.each_index do |index1|
         tier.players.slice(index1 + 1..tier.players.count).each_index do |index2|
-          puts "!! #{index1} VS #{index1 + index2}"
           create_game(tier.players.at(index1), tier.players.at(index1 + index2 + 1), tier)
         end
       end
-
-      # tier.players.each do |player1|
-      #   tier.players.each do |player2|
-      #     create_game(player1, player2, tier) unless player1 == player2
-      #   end
-      # end
-
     end
 
     # set start date

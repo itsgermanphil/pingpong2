@@ -1,4 +1,6 @@
 %h1 Player home screen for #{current_user.name}
 
+%h3 All-time score: #{current_user.total_score}
+
 - @games.each do |game|
   = render :partial => 'game', :locals => { :game => game }
