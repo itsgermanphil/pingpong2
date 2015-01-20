@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
 
   def require_user
-    redirect_to '/auth/500px' unless current_user
+    redirect_to login_path unless current_user
   end
 
   def current_user
@@ -18,4 +18,9 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+
+  def current_round
+    Round.find_or_build_current_round
+  end
+
 end

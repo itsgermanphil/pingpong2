@@ -17,3 +17,6 @@
 /tmp
 
 log/*
+
+/server.sh
+/services.sh

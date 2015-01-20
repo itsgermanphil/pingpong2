@@ -1,14 +1,22 @@
 Rails.application.routes.draw do
 
   get '/auth/500px/callback' => 'sessions#create'
-  get '/login' => 'sessions#login'
-  get '/logout' => 'sessions#logout'
+  get '/login' => 'sessions#login', as: 'login'
+  get '/logout' => 'sessions#logout', as: 'logout'
 
   get 'rankings/index'
 
   get 'home/index'
 
+  resources :rounds, only: %i(index show) do
+    resources :participants, only: %w(show)
+    post 'withdraw'
+  end
+
+
   resources :players
+
+  resources :games, only: %i(show update)
 
   root 'home#index'
 

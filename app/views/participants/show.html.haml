@@ -1,0 +1,44 @@
+
+%h2 Round ##{@round.id} -  #{pluralize(@games.unfinished.count, 'game')} left to play
+
+%h3 #{@participant.player.name}'s score: #{@games.finished.map { |g| g.score_for(@participant) }.inject(&:+)}
+
+%table.table.table-striped
+  %thead
+    %tr{class: @participant.tier.name.downcase.underscore}
+      %th(colspan="8") Tier #{@participant.tier.name}
+  %tbody
+    - @games.finished.each do |game|
+      - other = game.other_participant(@participant)
+      %tr
+        %td.game-score
+          = form_for game do |f|
+            .me
+              - if game.winner == @participant
+                %b
+                  = @participant.player.name
+              - else
+                = @participant.player.name
+            .score
+              = game.score_for(@participant)
+            .dash<> &nbsp;-&nbsp;
+            .score
+              = game.score_for(other)
+            .them
+              - if game.winner == other
+                %b
+                  = other.player.name
+              - else
+                = other.player.name
+
+
+    - @games.unfinished.each do |game|
+      %tr
+        %td.game-score
+          .me
+            = @participant.player.name
+          .score N/A
+          .dash<> &nbsp;-&nbsp;
+          .score N/A
+          .them
+            = game.other_participant(@participant).player.name

@@ -24,3 +24,5 @@ test:
 production:
   <<: *default
   database: pingpang_production
+  username: pingpang
+  password: <%= ENV['PINGPANG_DATABASE_PASSWORD'] %>

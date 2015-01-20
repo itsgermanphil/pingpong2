@@ -1,16 +1,46 @@
 class Round < ActiveRecord::Base
-  has_many :tiers
-  has_many :players, through: :tiers
-  has_many :games, through: :tiers
+  has_many :participants
+  has_many :tiers, through: :participants
+  has_many :players, through: :participants
+  has_many :games
 
-  scope :active, -> { order(start_date: :desc).first }
+  scope :active, -> { where(end_date: nil) }
 
-  def build(prev_round = nil)
+  def self.find_or_build_current_round
+    # TODO
+    return Round.first
+    Round.active.order(:id).last || build_next_round(Round.order(:id).last)
+  end
+
+  def create_games
+    participants.group_by(&:tier_id).each do |tier_id, participants|
+      participants.combination(2) do |p1, p2|
+        build_game(p1, p2)
+      end
+    end
+  end
+
+  def build_game(p1, p2)
+    Game.where(round_id: id, participant1_id: p1.id, participant2_id: p2.id).first_or_create!
+  end
+
+  def in_progress?
+    games.unfinished.any?
+  end
+
+  def self.build_next_round(prev_round = nil)
+    return
     # if nil, we need to seed the tiers randomly
     if !prev_round
-      seed_tiers
+      #seed_tiers
 
-      Player.all.each { |player| add_player(player) }
+      Player.find_each do |player|
+        add_player(player)
+      end
+
+      Tier.find_each do |tier|
+
+      end
     else
       # otherwise we build tiers based on the previous round standings
 
@@ -27,8 +57,22 @@ class Round < ActiveRecord::Base
     save
   end
 
+  # This method can be called repeatedly, it does nothing on sebsequent calls
   def add_player(player)
-    tiers.min_by { |tier| tier.players.count }.players.push(player)
+    # See if this player is already in this round
+    return if participants.where(player_id: player.id).exists?
+
+    tier = tiers.order(:level).reverse.min_by { |tier| tier.participants.count }
+
+    p1 = Participant.create!(round_id: id,
+                             tier_id: tier.id,
+                             player_id: player.id)
+
+    tier.participants.where('player_id != ?', player.id).each do |p2|
+      build_game(p1, p2)
+    end
+
+    p1
   end
 
   def start
@@ -63,11 +107,11 @@ class Round < ActiveRecord::Base
 
   def seed_tiers
     # hard-coded tiers?
-    tiers.push Tier.create(name: "Free", level: 0)
-    tiers.push Tier.create(name: "Plus", level: 1)
-    tiers.push Tier.create(name: "Awesome", level: 2)
-    tiers.push Tier.create(name: "Ambassador", level: 3)
-    tiers.push Tier.create(name: "Admin", level: 4)
+    #tiers.push Tier.create(name: "Free", level: 0)
+    #tiers.push Tier.create(name: "Plus", level: 1)
+    #tiers.push Tier.create(name: "Awesome", level: 2)
+    #tiers.push Tier.create(name: "Ambassador", level: 3)
+    #tiers.push Tier.create(name: "Admin", level: 4)
   end
 
   def create_game(player1, player2, tier)

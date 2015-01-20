@@ -8,4 +8,11 @@
   %body
     = render 'nav'
     .container
+      - if flash[:notice]
+        .alert.alert-success.alert-dismissible(role="alert")
+          %button.close(type="button" data-dismiss="alert" aria-label="Close")
+            %span(aria-hidden="true") &times;
+          %strong Notice:
+          = flash[:notice]
+
       = yield

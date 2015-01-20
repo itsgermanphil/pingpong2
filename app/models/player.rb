@@ -4,6 +4,8 @@ class Player < ActiveRecord::Base
   validates :uid, presence: true
   validates :name, :email, presence: true
 
+  validates :email, uniqueness: true
+
   def games(round)
     Participant.where(player: self).map {|p| p.game}.select { |game| game.tier.round == round }
   end
@@ -34,10 +36,12 @@ class Player < ActiveRecord::Base
   end
 
   def self.find_or_create_from_auth_hash(auth_hash)
-    p = Player.where(uid: auth_hash['uid']).first_or_initialize
+    # Find the players based on email (first-time login) or auth UID, which never changes
+    p = Player.where('email = ? or uid = ?', auth_hash['info']['email'], auth_hash['uid'].to_s).first_or_initialize
 
     raise 'You cannot do that!' unless auth_hash['extra']['raw_info']['user']['admin'] == 1
 
+    p.uid ||= auth_hash['uid']
     p.name = auth_hash['info']['name']
     p.email = auth_hash['info']['email']
 

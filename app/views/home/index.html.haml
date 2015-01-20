@@ -1,6 +1,36 @@
-%h1 Player home screen for #{current_user.name}
 
-%h3 All-time score: #{current_user.total_score}
+.pull-right
+  = button_to 'Withdraw', [@round, :withdraw], class: 'btn btn-danger', 'data-confirm' => 'This will score you -11 for your remaining games! Are you sure?'
 
-- @games.each do |game|
-  = render :partial => 'game', :locals => { :game => game }
+%h2 Round ##{@round.id} -  #{pluralize(@games.unfinished.count, 'game')} left to play
+
+%h3 Your score: #{@games.finished.map { |g| g.points_for(@participant) }.inject(&:+)}
+
+%table.table.table-striped
+  %thead
+    %tr{class: @participant.tier.name.downcase.underscore}
+      %th(colspan="8")= @participant.tier.name
+  %tbody
+    - @games.each do |game|
+      - other = game.other_participant(@participant)
+      %tr
+        %td.game-score
+          = form_for game do |f|
+            .me{class: game.winner == @participant && "winner"}
+              = @participant.player.name
+            .score
+              %input.form-control{type: "text", name: "game[score_#{@participant.id}]", value: game.score_for(@participant)}
+            .dash<> &nbsp;-&nbsp;
+            .score
+              %input.form-control{type: "text", name: "game[score_#{other.id}]", value: game.score_for(other)}
+            .them{class: game.winner == other && "winner"}
+              = other.player.name
+            .save
+              = f.submit "Save", class: 'btn btn-sm btn-default'
+
+%h2 Your tier:
+
+%table.table.table-striped
+  %tbody
+    = render @tier
+

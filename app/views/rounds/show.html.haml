@@ -1,0 +1,12 @@
+- if @round.in_progress?
+  %h1 Round #{@round.id} - In Progress
+  %h2 #{@round.games.unfinished.count} of #{@round.games.count} games to go
+- else
+  %h1 Round #{@round.id} - Finished!
+
+  %h2 The results are in!
+
+%table.table.table-striped
+  %tbody
+    - @tiers.each do |tier, participants|
+      = render tier, participants: participants

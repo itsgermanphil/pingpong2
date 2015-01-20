@@ -11,29 +11,47 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150119174651) do
+ActiveRecord::Schema.define(version: 20150120043003) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "games", force: :cascade do |t|
+    t.integer  "round_id"
+    t.integer  "participant1_id"
+    t.integer  "participant2_id"
+    t.integer  "score1"
+    t.integer  "score2"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+  end
+
+  add_index "games", ["participant1_id"], name: "index_games_on_participant1_id", using: :btree
+  add_index "games", ["participant2_id"], name: "index_games_on_participant2_id", using: :btree
+  add_index "games", ["round_id"], name: "index_games_on_round_id", using: :btree
+
+  create_table "matches", force: :cascade do |t|
+    t.integer  "participant_id"
+    t.integer  "game_id"
+    t.integer  "score"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "matches", ["game_id"], name: "index_matches_on_game_id", using: :btree
+  add_index "matches", ["participant_id"], name: "index_matches_on_participant_id", using: :btree
+
+  create_table "participants", force: :cascade do |t|
+    t.integer  "player_id"
+    t.integer  "round_id"
     t.integer  "tier_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  add_index "games", ["tier_id"], name: "index_games_on_tier_id", using: :btree
-
-  create_table "participants", force: :cascade do |t|
-    t.integer  "score"
-    t.integer  "player_id"
-    t.integer  "game_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-  end
-
-  add_index "participants", ["game_id"], name: "index_participants_on_game_id", using: :btree
   add_index "participants", ["player_id"], name: "index_participants_on_player_id", using: :btree
+  add_index "participants", ["round_id"], name: "index_participants_on_round_id", using: :btree
+  add_index "participants", ["tier_id"], name: "index_participants_on_tier_id", using: :btree
 
   create_table "players", force: :cascade do |t|
     t.string   "name"
@@ -69,8 +87,7 @@ ActiveRecord::Schema.define(version: 20150119174651) do
 
   add_index "tiers", ["round_id"], name: "index_tiers_on_round_id", using: :btree
 
-  add_foreign_key "games", "tiers"
-  add_foreign_key "participants", "games"
-  add_foreign_key "participants", "players"
+  add_foreign_key "matches", "games"
+  add_foreign_key "matches", "participants"
   add_foreign_key "tiers", "rounds"
 end
