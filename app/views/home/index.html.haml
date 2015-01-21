@@ -20,14 +20,14 @@
         %td.game-score
           = form_for game do |f|
             .me{class: game.winner == @participant && "winner"}
-              = @participant.player.name
+              = @participant.player.display_name
             .score
               %input.form-control{type: "text", name: "game[score_#{@participant.id}]", value: game.score_for(@participant)}
             .dash<> &nbsp;-&nbsp;
             .score
               %input.form-control{type: "text", name: "game[score_#{other.id}]", value: game.score_for(other)}
             .them{class: game.winner == other && "winner"}
-              = other.player.name
+              = other.player.display_name
             .save
               = f.submit "Save", class: 'btn btn-sm btn-default'
 

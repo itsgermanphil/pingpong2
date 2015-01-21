@@ -13,7 +13,7 @@
             %span.glyphicon.glyphicon-star
           - else
             %span.glyphicon.glyphicon-arrow-up
-    %td= link_to "#{index + 1}. #{participant.player.name}", [@round, participant]
+    %td= link_to "#{index + 1}. #{participant.player.display_name}", [@round, participant]
     %td= participant.score
     - unless finished
       %td

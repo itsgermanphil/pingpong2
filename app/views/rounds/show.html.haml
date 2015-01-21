@@ -7,7 +7,7 @@
   %h2 The results are in!
 
   - @round.tiers.order(:level).each do |tier|
-    - names = tier.participants(@round).sort_by(&:score).reverse.first(2).map { |p| "<b>#{p.player.name}</b>" }.join(" and ").html_safe
+    - names = tier.participants(@round).sort_by(&:score).reverse.first(2).map { |p| "<b>#{p.player.display_name}</b>" }.join(" and ").html_safe
     %p Congratz to #{names}, our top players in #{tier.name}!
 
 %table.table.table-striped

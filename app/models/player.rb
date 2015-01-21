@@ -22,6 +22,15 @@ class Player < ActiveRecord::Base
     calc_score all_games
   end
 
+  def display_name
+    if name[/ /]
+      parts = name.split(' ')
+      [parts.first, parts.second[0]].join(' ')
+    elsif name[/@/]
+      name.split('@').first
+    end
+  end
+
   private
 
   def calc_score(games)
