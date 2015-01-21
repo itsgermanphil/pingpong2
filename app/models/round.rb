@@ -66,17 +66,18 @@ class Round < ActiveRecord::Base
     # See if this player is already in this round
     return if participants.where(player_id: player.id).exists?
 
-    tier = tiers.order(:level).reverse.min_by { |tier| tier.participants.count }
+    tier = tiers.order(:level).reverse.min_by { |tier| tier.participants(self).count }
 
-    p1 = Participant.create!(round_id: id,
-                             tier_id: tier.id,
-                             player_id: player.id)
+    Round.transaction do
+      p1 = Participant.create!(round_id: id,
+                               tier_id: tier.id,
+                               player_id: player.id)
 
-    tier.participants.where('player_id != ?', player.id).each do |p2|
-      build_game(p1, p2)
+      tier.participants(self).where('player_id != ?', player.id).each do |p2|
+        build_game(p1, p2)
+      end
+      return p1
     end
-
-    p1
   end
 
   def check_for_completion
