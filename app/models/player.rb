@@ -48,12 +48,12 @@ class Player < ActiveRecord::Base
     raise 'You cannot do that!' unless auth_hash['extra']['raw_info']['user']['admin'] == 1
 
     # Find the players based on email (first-time login) or auth UID, which never changes
-    p = Player.where('email = ? or uid = ?', auth_hash['info']['email'], auth_hash['uid'].to_s).first
+    p = Player.where('email = ? or uid = ?', auth_hash['info']['email'].downcase, auth_hash['uid'].to_s).first
 
     p ||= Player.new
     p.uid ||= auth_hash['uid']
     p.name = auth_hash['info']['name']
-    p.email = auth_hash['info']['email']
+    p.email = auth_hash['info']['email'].downcase
 
     p.save!
     p
