@@ -1,10 +1,24 @@
-- participants ||= tier.participants
+- participants ||= tier.participants(@round)
+- finished = @round.finished?
 
 %tr{class: tier.name.downcase.underscore}
   %th(colspan=3) Tier: #{tier.name}
 
-- tier.participants.sort_by(&:score).reverse.each.with_index do |participant, index|
+- participants.sort_by(&:score).reverse.each.with_index do |participant, index|
   %tr
+    - if finished
+      %td.icon
+        - if index == 0 || index == 1
+          - if tier.admin?
+            %span.glyphicon.glyphicon-star
+          - else
+            %span.glyphicon.glyphicon-arrow-up
     %td= link_to "#{index + 1}. #{participant.player.name}", [@round, participant]
     %td= participant.score
-    %td #{participant.games.finished.count} of #{participant.games.count} games played
+    - unless finished
+      %td
+        - if participant.games.unfinished.count == 0
+          Played all #{participant.games.count} games
+        - else
+          %b
+            #{participant.games.finished.count} of #{participant.games.count} games played

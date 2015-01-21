@@ -18,6 +18,8 @@ class Game < ActiveRecord::Base
   scope :unfinished, -> { where(score1: nil, score2: nil) }
   scope :finished, -> { where('score1 is not null and score2 is not null') }
 
+  after_save :ping_round_for_closure
+
   def finished?
     score1.present? && score2.present?
   end
@@ -93,4 +95,8 @@ class Game < ActiveRecord::Base
     self.errors.add(:base, :invalid) if score2 > ([11, score1 + 2].max)
   end
 
+  def ping_round_for_closure
+    # Notify the round that a game is finished
+    round.check_for_completion
+  end
 end

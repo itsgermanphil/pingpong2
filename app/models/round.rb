@@ -1,10 +1,13 @@
 class Round < ActiveRecord::Base
   has_many :participants
-  has_many :tiers, through: :participants
   has_many :players, through: :participants
   has_many :games
 
   scope :active, -> { where(end_date: nil) }
+
+  def tiers
+    Tier.where(id: participants.pluck(:tier_id).uniq)
+  end
 
   def self.find_or_build_current_round
     # TODO
@@ -20,15 +23,16 @@ class Round < ActiveRecord::Base
     end
   end
 
-  def build_game(p1, p2)
-    Game.where(round_id: id, participant1_id: p1.id, participant2_id: p2.id).first_or_create!
+  def finished?
+    end_date.present?
   end
 
   def in_progress?
-    games.unfinished.any?
+    end_date.nil?
   end
 
-  def self.build_next_round(prev_round = nil)
+  def self.build_next_round(prev_round)
+    # TODO
     return
     # if nil, we need to seed the tiers randomly
     if !prev_round
@@ -75,49 +79,18 @@ class Round < ActiveRecord::Base
     p1
   end
 
-  def start
-    # generate games
-    tiers.each do |tier|
-      tier.players.each_index do |index1|
-        tier.players.slice(index1 + 1..tier.players.count).each_index do |index2|
-          create_game(tier.players.at(index1), tier.players.at(index1 + index2 + 1), tier)
-        end
-      end
-    end
+  def check_for_completion
+    return unless games.all?(&:finished?)
 
-    # set start date
-    self.start_date = DateTime.current
-    save
+    self.end_date ||= Time.now
+    save!
   end
 
-  def complete?
-    games.all? { |game| game.complete? }
-  end
-
-  def complete
-    self.end_date = DateTime.current
-    save
-  end
-
-  def active?
-    self.end_date != nil
-  end
 
   private
 
-  def seed_tiers
-    # hard-coded tiers?
-    #tiers.push Tier.create(name: "Free", level: 0)
-    #tiers.push Tier.create(name: "Plus", level: 1)
-    #tiers.push Tier.create(name: "Awesome", level: 2)
-    #tiers.push Tier.create(name: "Ambassador", level: 3)
-    #tiers.push Tier.create(name: "Admin", level: 4)
-  end
-
-  def create_game(player1, player2, tier)
-    game = Game.create(tier: tier)
-    Participant.create(player: player1, game: game)
-    Participant.create(player: player2, game: game)
+  def build_game(p1, p2)
+    Game.where(round_id: id, participant1_id: p1.id, participant2_id: p2.id).first_or_create!
   end
 
 end

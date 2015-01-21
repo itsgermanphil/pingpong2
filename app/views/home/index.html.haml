@@ -1,4 +1,7 @@
 
+- if session[:onboarding]
+  = render 'onboarding'
+
 .pull-right
   = button_to 'Withdraw', [@round, :withdraw], class: 'btn btn-danger', 'data-confirm' => 'This will score you -11 for your remaining games! Are you sure?'
 

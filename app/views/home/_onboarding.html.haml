@@ -1,0 +1,14 @@
+
+.well
+  %h1 WELCOME TO PING PANG
+
+  %h2 You have been added to the round already in progress.
+
+  %p You have been randomly assigned to the <b>#{@tier.name}</b> tier.
+
+  %p You have #{@games.unfinished.count} games to play in this round.
+
+  - unless @tier.admin?
+    %p Finish in the top two spots to move up to the next tier!
+
+  %a(href="/home/dismiss-onboarding" data-method="post") Dismiss

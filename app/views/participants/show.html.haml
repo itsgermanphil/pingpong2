@@ -1,7 +1,7 @@
 
 %h2 Round ##{@round.id} -  #{pluralize(@games.unfinished.count, 'game')} left to play
 
-%h3 #{@participant.player.name}'s score: #{@games.finished.map { |g| g.score_for(@participant) }.inject(&:+)}
+%h3 #{@participant.player.name}'s score: #{@games.finished.map { |g| g.points_for(@participant) }.inject(&:+)}
 
 %table.table.table-striped
   %thead

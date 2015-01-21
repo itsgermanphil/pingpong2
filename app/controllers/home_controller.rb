@@ -15,4 +15,9 @@ class HomeController < ApplicationController
     @games = @participant.games
   end
 
+  def dismiss_onboarding
+    session.delete(:onboarding)
+    redirect_to root_path
+  end
+
 end

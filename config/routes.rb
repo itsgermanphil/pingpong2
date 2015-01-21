@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   get 'rankings/index'
 
   get 'home/index'
+  post 'home/dismiss-onboarding' => 'home#dismiss_onboarding'
 
   resources :rounds, only: %i(index show) do
     resources :participants, only: %w(show)

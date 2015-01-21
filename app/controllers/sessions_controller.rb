@@ -13,6 +13,7 @@ class SessionsController < ApplicationController
   # GET auth/500px/callback
   def create
     player = Player.find_or_create_from_auth_hash(auth_hash)
+    session[:onboarding] = true
 
     current_round.add_player(player)
 
