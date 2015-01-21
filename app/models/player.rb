@@ -6,6 +6,12 @@ class Player < ActiveRecord::Base
 
   validates :email, uniqueness: true
 
+  before_validation :normalize_email
+
+  def normalize_email
+    self.email = self.email.try(:downcase).try(:strip)
+  end
+
   def games(round)
     Participant.where(player: self).map {|p| p.game}.select { |game| game.tier.round == round }
   end
