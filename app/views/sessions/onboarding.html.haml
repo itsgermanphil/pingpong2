@@ -1,0 +1,30 @@
+
+%h1 Is this you?
+
+%br
+
+.row
+  .col-md-3
+    %img(src="#{current_user.image}")
+  .col-md-1
+  .col-md-7
+    %h3 Your current profile details:
+    %ul
+      %li Username: <b>#{current_user.nickname}</b>
+      %li Name: <b>#{current_user.name}</b>
+      %li Email: <b>#{current_user.email}</b> (will be kept private)
+
+    %p
+    %p
+      %a.btn.btn-primary.btn-lg(href="/join" data-method="post") This is me! Join the Tournament!
+
+    %p
+      %b If this isn't you:
+
+    %ul
+      %li Logout (button below)
+      %li Visit 500px.com and log in with the correct user
+      %li Return to http://pingpang.herokuapp.com/login
+
+    %p
+      %a.btn.btn-danger.btn-lg(href="/logout") Logout

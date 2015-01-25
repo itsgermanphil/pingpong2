@@ -1,16 +1,43 @@
-- if @round.in_progress?
-  %h1 Round #{@round.id} - In Progress
-  %h2 #{@round.games.unfinished.count} of #{@round.games.count} games to go
-- else
-  %h1 Round #{@round.id} - Finished!
 
-  %h2 The results are in!
+.row
+  .col-md-12
+    - if @round.in_progress?
+      %h2 Round #{@round.round_number} - In Progress
+      %h3 #{@round.games.unfinished.count} of #{@round.games.count} games to go
+    - else
 
-  - @round.tiers.order(:level).each do |tier|
-    - names = tier.participants(@round).sort_by(&:score).reverse.first(2).map { |p| "<b>#{p.player.display_name}</b>" }.join(" and ").html_safe
-    %p Congratz to #{names}, our top players in #{tier.name}!
+      %h2 Round #{@round.round_number} - Finished!
 
-%table.table.table-striped
-  %tbody
-    - @tiers.each do |tier, participants|
-      = render tier, participants: participants
+      %br
+
+      - last_tier = nil
+      - @round.tiers.order(:level).each do |tier|
+        - names = tier.participants(@round).sort_by(&:points).reverse.first(2).map { |p| "<b>#{p.player.display_name}</b>" }.join(" and ").html_safe
+        %p.alert{class: tier.name.downcase.underscore}
+          - if tier.admin?
+            %span.glyphicon.glyphicon-star
+            #{names} are our top players in #{tier.name}!
+          - else
+            %span.glyphicon.glyphicon-arrow-up
+            #{names} move up to #{last_tier.name}
+        - last_tier = tier
+
+- if @round.finished?
+  .row
+    .col-md-12
+      .text-center
+        %a.btn.btn-lg.btn-primary(href="/rounds/next") The next round is already under way >>
+      %br
+
+.row
+  %table.table.table-striped.col-md-12
+    %tbody
+      - @tiers.each do |tier, participants|
+        = render tier, participants: participants
+
+- if @round.finished?
+  .row
+    .col-md-12
+      .text-center
+        %a.btn.btn-lg.btn-primary(href="/rounds/next") The next round is already under way >>
+

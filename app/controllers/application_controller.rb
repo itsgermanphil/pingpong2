@@ -12,15 +12,21 @@ class ApplicationController < ActionController::Base
   def current_user
     if session[:user_id]
       begin
-        Player.find(session[:user_id])
+        @current_user ||= Player.find(session[:user_id])
       rescue ActiveRecord::RecordNotFound => e
         return nil
       end
     end
+
+    @current_user
   end
 
   def current_round
     Round.find_or_build_current_round
   end
 
+  def require_admin
+    require_user
+    redirect_to root_path, notice: 'Not authorized' unless current_user.admin
+  end
 end

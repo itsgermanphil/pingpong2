@@ -1,9 +1,12 @@
 
 $ ->
 
+  $('.game-score-form button').on 'click', (e) ->
+    $(e.currentTarget).closest('td').find('form').submit()
+
   $('form.edit_game').submit (e) ->
     score1 = $(e.currentTarget)
-    $scores = $(e.currentTarget).find('.score input')
+    $scores = $(e.currentTarget).find(':text')
 
     score1 = $scores.first().val() | 0
     score2 = $scores.last().val() | 0

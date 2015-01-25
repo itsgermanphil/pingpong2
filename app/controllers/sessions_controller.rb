@@ -12,15 +12,35 @@ class SessionsController < ApplicationController
 
   # GET auth/500px/callback
   def create
-    player = Player.find_or_create_from_auth_hash(auth_hash)
-    session[:onboarding] = true
-
-    current_round.add_player(player)
+    begin
+      player = Player.find_or_create_from_auth_hash(auth_hash)
+    rescue Player::AuthorizationError
+      redirect_to unauthorized_path
+      return
+    end
 
     session[:user_id] = player.id
+
+    if player.last_round.nil?
+      redirect_to onboarding_path
+    else
+      redirect_to root_path
+    end
+  end
+
+  # GET /onboarding
+  def onboarding
+
+  end
+
+  # POST /rounds/join
+  def join
+    current_round.add_player(current_user)
     redirect_to root_path
   end
 
+  def unauthorized
+  end
 
   protected
 

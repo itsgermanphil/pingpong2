@@ -1,0 +1,16 @@
+.row
+  .col-md-12
+    %h1 Ping Pang FAQ
+
+#faq-collapse.panel-group(role="tablist" aria-multiselectable="true")
+  - I18n.t('faq').each.with_index do |item,index|
+    - id = item[:title].downcase.parameterize
+    .panel.panel-default{id: id}
+      .panel-heading(role="tab" id="faq-#{index}-heading")
+        %h4.panel-title
+          %a.faq-link(href="##{id}")
+            = item[:title]
+      .panel(role="tabpanel" area-labelledby="#faq-#{index}-heading")
+        .panel-body
+          = item[:body_html].html_safe
+

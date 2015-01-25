@@ -1,3 +1,23 @@
+.footer
+  padding-top: 100px
+  padding-bottom: 10px
+  font-size: 20px
+
+.admin
+  background: #222222
+  color: #fff
+.awesome
+  background: #0099e5
+  color: #fff
+.plus
+  background: #34bf49
+  color: #fff
+.free
+  background: #b9c1c7
+  color: #000
+.ambassadors
+  background: #ffd200
+  color: #000
 
 table.table
   tr.admin th
@@ -16,30 +36,44 @@ table.table
     background: #ffd200
     color: #000
 
-  td.game-score > form > div, td.game-score > div
-    display: inline-block
-    text-align: center
-    input[type=text]
-      text-align: center
+  td.game-score-form
+    line-height: 2
+    form
+      position: relative
+      // No idea why this is necessary
+      top: -7px
+      input.save
+        display: none
+    .me, .score, .them, .save
+      display: inline-block
+      margin: 0
+
+    .me
       width: 2em
+      padding-right: 5px
+      text-align: right
+    .them
+      width: calc(100% - 13em)
+      padding-left: 5px
+      text-align: left
+    .me, .them
+      overflow: hidden
+      text-overflow: ellipsis
+      white-space: nowrap
+    .score
+      width: 5em
       padding: 0
-  .icon
-    width: 32px
-  .me
-    text-align: right
-    padding-right: 10px
-  .them
-    padding-left: 10px
-    text-align: left
-  .dash
-    width: 2em
-    text-align: center
-  .save
-    width: 5em
-  .me, .them, .dash, .score
-    line-height: 2.1
-
-  .me, .them
-    &.winner
+      padding-left: 0
+      padding-right: 0
+      input, .dash
+        width: 2em
+        display: inline-block
+        padding: 0
+        text-align: center
+      .dash
+        width: 1em
+    .save
+      float: right
+    .winner
       font-weight: bold
-
+      color: #090

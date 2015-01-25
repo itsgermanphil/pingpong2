@@ -1,5 +1,6 @@
 class Player < ActiveRecord::Base
-  has_and_belongs_to_many :tiers
+  belongs_to :last_round, class_name: 'Round', foreign_key: 'last_round_id'
+  has_many :participants, dependent: :destroy
 
   validates :uid, presence: true
   validates :name, :email, presence: true
@@ -7,6 +8,8 @@ class Player < ActiveRecord::Base
   validates :email, uniqueness: true
 
   before_validation :normalize_email
+
+  class AuthorizationError < StandardError; end
 
   def normalize_email
     self.email = self.email.try(:downcase).try(:strip)
@@ -29,12 +32,7 @@ class Player < ActiveRecord::Base
   end
 
   def display_name
-    if name[/ /]
-      parts = name.split(' ')
-      [parts.first, parts.second[0]].join(' ')
-    elsif name[/@/]
-      name.split('@').first
-    end
+    name
   end
 
   private
@@ -51,17 +49,20 @@ class Player < ActiveRecord::Base
   end
 
   def self.find_or_create_from_auth_hash(auth_hash)
-    raise 'You cannot do that!' unless auth_hash['extra']['raw_info']['user']['admin'] == 1
+    raise AuthorizationError, 'You cannot do that!' unless auth_hash['extra']['raw_info']['user']['admin'] == 1
 
     # Find the players based on email (first-time login) or auth UID, which never changes
     p = Player.where('email = ? or uid = ?', auth_hash['info']['email'].downcase, auth_hash['uid'].to_s).first
 
     p ||= Player.new
     p.uid ||= auth_hash['uid']
+    p.nickname = auth_hash['info']['nickname']
+    p.image = auth_hash['info']['image']
     p.name = auth_hash['info']['name']
     p.email = auth_hash['info']['email'].downcase
 
     p.save!
     p
   end
+
 end

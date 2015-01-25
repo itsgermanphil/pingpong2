@@ -3,6 +3,12 @@ class Round < ActiveRecord::Base
   has_many :players, through: :participants
   has_many :games
 
+  before_validation :assign_round_number
+
+  validates :start_date, presence: true
+
+  validates :round_number, presence: true
+
   scope :active, -> { where(end_date: nil) }
 
   def tiers
@@ -11,7 +17,6 @@ class Round < ActiveRecord::Base
 
   def self.find_or_build_current_round
     # TODO
-    return Round.first
     Round.active.order(:id).last || build_next_round(Round.order(:id).last)
   end
 
@@ -23,6 +28,10 @@ class Round < ActiveRecord::Base
     end
   end
 
+  def assign_round_number
+    self.round_number ||= Round.count + 1
+  end
+
   def finished?
     end_date.present?
   end
@@ -32,41 +41,50 @@ class Round < ActiveRecord::Base
   end
 
   def self.build_next_round(prev_round)
-    # TODO
-    return
-    # if nil, we need to seed the tiers randomly
-    if !prev_round
-      #seed_tiers
 
-      Player.find_each do |player|
-        add_player(player)
+    raise "Cannot build round while a round is in progress" if Round.active.any? || prev_round.in_progress?
+
+    Round.transaction do
+      new_groups = Hash[Tier.pluck(:level).sort.map { |level| [level, []] }]
+      last_level = new_groups.keys.max
+
+      prev_round.participants.group_by(&:tier_id).each do |id, participants|
+        tier = Tier.find(id)
+        participants = participants.sort_by(&:points).reverse
+        if tier.level == 0
+          # No upwards movement
+          new_groups[tier.level].concat(participants[0..-3])
+          new_groups[tier.level + 1].concat(participants.last(2))
+        elsif  tier.level < last_level
+          # Move two players up...
+          new_groups[tier.level - 1].concat(participants.first(2))
+          new_groups[tier.level].concat(participants[2..-3])
+          new_groups[tier.level + 1].concat(participants.last(2))
+        else
+          new_groups[tier.level - 1].concat(participants.first(2))
+          new_groups[tier.level].concat(participants[2..-1])
+        end
       end
 
-      Tier.find_each do |tier|
+      new_round = Round.create!(start_date: Time.now)
 
-      end
-    else
-      # otherwise we build tiers based on the previous round standings
-
-      # duplicate each tier
-      prev_round.tiers.each do |prev_tier|
-        tier = Tier.new(name: prev_tier.name, level: prev_tier.level)
-        prev_tier.players.each { |player| tier.players.push(player) }
+      new_groups.each do |level, players|
+        tier = Tier.find_by!(level: level)
+        players.each do |player|
+          new_round.add_player(player.player, tier)
+        end
       end
 
-      # move top/bottom 2 at tier boundaries
-
-
+      return new_round
     end
-    save
   end
 
   # This method can be called repeatedly, it does nothing on sebsequent calls
-  def add_player(player)
+  def add_player(player, tier = nil)
     # See if this player is already in this round
     return if participants.where(player_id: player.id).exists?
 
-    tier = tiers.order(:level).reverse.min_by { |tier| tier.participants(self).count }
+    tier ||= tiers.order(:level).reverse.min_by { |tier| tier.participants(self).count }
 
     Round.transaction do
       p1 = Participant.create!(round_id: id,

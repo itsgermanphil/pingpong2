@@ -1,0 +1,14 @@
+
+%h2 Players
+
+.players-list
+  - @players.each do |player|
+    .media
+      .media-left
+        = link_to player do
+          %img.media-object{src: player.image || default_image_path, width: 64}
+      .media-body
+        %h4.media-heading= player.nickname
+        %p= player.name
+
+

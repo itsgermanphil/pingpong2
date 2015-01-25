@@ -1,0 +1,19 @@
+
+- if @player.errors.any?
+  #error_explanation
+    %h2 #{pluralize(@player.errors.count, "error")} prohibited this player from being saved:
+
+    %ul
+      - @player.errors.full_messages.each do |message|
+        %li= message
+
+
+= form_for @player, url: profile_path do |f|
+
+  .form-group
+    = f.label :name
+    = f.text_field :name, class: 'form-control'
+
+  .form-group
+    = f.submit 'Save Profile', class: 'btn btn-primary'
+    %a.btn.btn-default(href="/") Cancel

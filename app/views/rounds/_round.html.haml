@@ -1,0 +1,7 @@
+%tr
+  %td
+    = link_to "Round #{round.round_number}", round
+  %td= round.participants.count
+  %td= round.start_date.strftime('%b %-d, %Y')
+  %td= round.end_date.try(:strftime, '%b %-d, %Y')
+

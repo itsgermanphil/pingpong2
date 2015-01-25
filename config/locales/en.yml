@@ -21,3 +21,56 @@
 
 en:
   hello: "Hello world"
+
+  faq:
+    -
+      title: What is this?
+      body_html: '<p>This is the in-house Table Tennis app for tracking the ongoing 500px table tennis tournament</p>
+
+          <p>The tournament is composed of rounds, in which all players are grouped by tier.</p>
+
+          <p>The round ends when each player has played all other players in their tier, and recorded the score from their game. The next round beings immediately.</p>'
+    -
+      title: Why "ping pang"?
+      body_html: "pingpong.herokuapp.com was taken."
+    -
+      title: Can I join?
+      body_html: '<p> Sign in with your 500px account and you will automatically be assigned
+        to one of the tiers for the round in progress.</p>'
+    -
+      title: What are the rules?
+      body_html:
+        '<p>We''re using the following rules, with <b>one exception</b>: We play <b>one game</b>, not best of 7 or best of 5</p><br><br>
+        <iframe width="560" height="315" src="//www.youtube.com/embed/dGs-w-pHieg" frameborder="0" allowfullscreen></iframe>'
+    -
+      title: How do I use the app?
+      body_html: '<p>Visit the app. From the homepage, you will be prompted to log in with your 500px account.</p>
+        <p>After you''ve logged in, you''ll see a list of the games you have to play in this round of the tournament</p>
+        <p>Arrange a time to play each opponent, and record your score.</p>
+        <p>If you cannot finish your games, you can push the "Withdraw" button to forfeit your remaining games.</p>'
+    -
+      title: How does the tournament work?
+      body_html: '<p>In each round of the tournament, players are divided into tiers.</p>
+        <p>There are 5 tiers (Admin, Ambassador, Awesome, etc), with at least 4 players in each tier.</p>
+        <p>Within a tier, every player plays every other player, and records their scores.</p>
+        <p>Once all tiers have finished playing, the round is over, and the top two players from each tier move up to the tier above them, while the bottom players move down.</p>
+        <p>Over time, players in each tier should be more or less evenly matched, making for funner pairings.</p>
+        <p>The goal is <b>fun</b>, and to produce a system where your matches are fair and enjoyable!</p>'
+    -
+      title: How are points calculated?
+      body_html: ' <p> Your score for each game is calculated as follows:</p>
+
+          <ol>
+            <li>You get 11 points for playing</li>
+            <li>Add the number of points you scored against your opponent</li>
+            <li>Subtract the number of points scored against you.</li>
+          </ol>
+
+          <p>So, if you won the game 11-8, you would earn <code>11 + 11 - 8</code> or <code>14</code> points for that game. Your opponent would earn <code>11 + 8 - 11</code> or <code>8</code> points.</p>
+        <p>The lowest score you can get for a game is 0 points (lost 0-11).</p>
+        <p>The highest score you can get for a game is 22 points (won 11-0).</p>
+        <p>If you forfeit a game, you get -11 points.</p>
+        <p>Your position in the tier is calculated by adding up the points earned from each game.</p>'
+    -
+      title: I found a bug!
+      body_html: '<p>Talk to Matt, Mike T or Eric if you have any questions, feedback or bug reports to file about Ping Pang. It''s a hack-day project, we know it''s not perfect.</p>'

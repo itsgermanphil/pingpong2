@@ -1,0 +1,12 @@
+
+.row
+  .col-md-3
+    %img{src: @player.image || default_image_path}
+  .col-md-1
+  .col-md-8
+    %ul
+      %li Username: <b>#{@player.nickname}</b>
+      %li Name: <b>#{@player.name}</b>
+
+
+    %a.btn.btn-danger{href: player_path(@player)}(data-method="delete" data-confirm="Are you sure? This cannot be undone.") Delete Player
