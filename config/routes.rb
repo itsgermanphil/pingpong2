@@ -22,6 +22,7 @@ Rails.application.routes.draw do
     get 'next', on: :collection
     resources :participants, only: %w(show)
     post 'withdraw'
+    post 'join'
   end
 
   resources :players, except: %i(new create)

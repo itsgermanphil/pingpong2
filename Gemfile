@@ -41,6 +41,9 @@ gem 'rack-timeout'
 # gem 'capistrano-rails', group: :development
 
 group :development, :test do
+  gem 'thin'
+  gem 'rspec-rails'
+  gem 'factory_girl'
   gem 'pry'
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

@@ -30,13 +30,24 @@ class RoundsController < ApplicationController
     @tiers = Hash[@tiers]
   end
 
+  # Re-create all the games from the current round
+  def join
+    @round = Round.find(params[:round_id])
+    participant = @round.participants.where(player_id: current_user.id).first!
+
+    @round.create_games_for(participant)
+
+    redirect_to root_path, notice: 'You have joined the round in progress'
+  end
+
+  # Delete all the players games in the current round
   def withdraw
     @round = Round.find(params[:round_id])
 
-    participant = @round.participants.includes(:player).where(player_id: current_user.id).first
+    participant = @round.participants.includes(:player).where(player_id: current_user.id).first!
 
-    participant.games.unfinished.each do |game|
-      game.forfeit!(participant)
+    participant.games.each do |game|
+      game.destroy
     end
 
     redirect_to root_path, notice: 'You have withdrawn from the current round'

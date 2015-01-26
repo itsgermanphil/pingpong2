@@ -91,10 +91,16 @@ class Round < ActiveRecord::Base
                                tier_id: tier.id,
                                player_id: player.id)
 
-      tier.participants(self).where('player_id != ?', player.id).each do |p2|
+      create_games_for(p1)
+      return p1
+    end
+  end
+
+  def create_games_for(p1)
+    Round.transaction do
+      p1.tier.participants(self).where('player_id != ?', p1.player.id).each do |p2|
         build_game(p1, p2)
       end
-      return p1
     end
   end
 

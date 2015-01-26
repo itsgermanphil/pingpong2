@@ -1,14 +1,24 @@
 
-%h2 Players
 
-.players-list
-  - @players.each do |player|
-    .media
-      .media-left
-        = link_to player do
-          %img.media-object{src: player.image || default_image_path, width: 64}
-      .media-body
-        %h4.media-heading= player.nickname
-        %p= player.name
+.row
+  %h2.col-md-12
+    Players List
+
+.row
+  .col-md-12
+    .alert.alert-danger
+      %p This is an Admin-only feature. Use this to clean up accidentially created accounts. Deletion is permanent!
+
+.row
+  .players-list.col-md-12
+    - @players.each do |player|
+      .media
+        .media-left
+          = link_to player do
+            %img.media-object{src: player.image || default_image_path, width: 64}
+        .media-body
+          = link_to player do
+            %h4.media-heading= player.nickname
+            %p= player.name
 
 

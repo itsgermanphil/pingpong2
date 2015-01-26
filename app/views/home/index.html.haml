@@ -20,7 +20,10 @@
       - else
         - if @unfinished_games.any?
           .pull-right
-            = button_to 'Withdraw', [@round, :withdraw], class: 'btn btn-danger', 'data-confirm' => 'This will score you -11 for your remaining games! Are you sure?'
+            = button_to 'Withdraw', [@round, :withdraw], class: 'btn btn-danger', 'data-confirm' => 'This will remove all of your games from the current round'
+        - elsif @finished_games.none? && @unfinished_games.none?
+          .pull-right
+            = button_to 'Rejoin Round', [@round, :join], class: 'btn btn-primary', 'data-confirm' => 'This will generate a new list of games for you to play, continue?'
 
         %h3 Round ##{@round.round_number}
 

@@ -1,6 +1,8 @@
 class Game < ActiveRecord::Base
+  # touch: true - cache-busting in home#index, round#show, etc
   belongs_to :round, touch: true
 
+  # touch: true - more cache-busting
   belongs_to :participant1, class_name: 'Participant', touch: true
   belongs_to :participant2, class_name: 'Participant', touch: true
 
