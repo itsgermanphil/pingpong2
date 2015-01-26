@@ -1,5 +1,6 @@
 class Player < ActiveRecord::Base
   belongs_to :last_round, class_name: 'Round', foreign_key: 'last_round_id'
+
   has_many :participants, dependent: :destroy
 
   validates :uid, presence: true

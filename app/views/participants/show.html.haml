@@ -1,11 +1,14 @@
 
 .row
-  .col-md-12
-    %h3= @participant.player.name
-    %h4 Round ##{@round.round_number}
-    %h4 #{pluralize(@games.unfinished.count, 'game')} left to play
-    %h4 Score this round: #{@participant.points} points
-
+  .col-md-1.col-sm-2.col-xs-5
+    %img{src: @participant.player.image || default_image_path, width: 128}
+  .col-md-1.col-sm-1.col-xs-1
+  .col-md-9.col-sm-9.col-xs-7
+    %h4= @participant.player.name
+    %p Round ##{@round.round_number}
+    %p #{pluralize(@games.unfinished.count, 'game')} left to play
+    %p Score this round: #{@participant.points} points
+%br
 .row
   %table.table.table-striped.col-md-12
     %thead
