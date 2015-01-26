@@ -16,15 +16,15 @@ class HomeController < ApplicationController
       current_user.save!
     end
 
-    @participant = @round.participants.includes(:tier).where(player_id: current_user.id).first
+    @participant = @round.participants.find_by!(player_id: current_user.id)
 
     if @participant.nil?
       @participant = @round.add_player(current_user)
     end
 
     @tier = @participant.tier
-    @finished_games = @participant.games.finished.order(:id)
-    @unfinished_games = @participant.games.unfinished.order(:id)
+    @finished_games = @participant.games.finished.order(:id).all
+    @unfinished_games = @participant.games.unfinished.order(:id).all
   end
 
   def dismiss_onboarding

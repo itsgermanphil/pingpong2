@@ -1,8 +1,8 @@
 class Game < ActiveRecord::Base
-  belongs_to :round
+  belongs_to :round, touch: true
 
-  belongs_to :participant1, class_name: 'Participant'
-  belongs_to :participant2, class_name: 'Participant'
+  belongs_to :participant1, class_name: 'Participant', touch: true
+  belongs_to :participant2, class_name: 'Participant', touch: true
 
   validates :round, presence: true
 

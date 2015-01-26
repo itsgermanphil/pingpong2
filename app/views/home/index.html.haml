@@ -4,57 +4,57 @@
     .col-md-12
       = render 'onboarding'
 
-.row
-  .col-md-12
-    - if @round.finished?
-      .text-center
-        %h3 Round ##{@round.round_number} is over!
-        %br
-        = link_to @round, class: 'btn btn-lg btn-primary' do
-          The results are in!
-        %br
-        %br
-        %br
+- cache ['v1', @participant] do
+  .row
+    .col-md-12
+      - if @round.finished?
+        .text-center
+          %h3 Round ##{@round.round_number} is over!
+          %br
+          = link_to @round, class: 'btn btn-lg btn-primary' do
+            The results are in!
+          %br
+          %br
+          %br
 
-    - else
-      - if @unfinished_games.any?
-        .pull-right
-          = button_to 'Withdraw', [@round, :withdraw], class: 'btn btn-danger', 'data-confirm' => 'This will score you -11 for your remaining games! Are you sure?'
-
-      %h3 Round ##{@round.round_number}
-
-      - if @unfinished_games.any?
-        %p #{pluralize(@unfinished_games.count, 'game')} left to play
       - else
-        %p No games left to play this round!
+        - if @unfinished_games.any?
+          .pull-right
+            = button_to 'Withdraw', [@round, :withdraw], class: 'btn btn-danger', 'data-confirm' => 'This will score you -11 for your remaining games! Are you sure?'
 
-        %p Check out of the <a href="#{url_for(@round)}">current standings</a> in this round.
+        %h3 Round ##{@round.round_number}
 
-.row
-  %table.table.table-striped.col-md-12
-    %tbody
-      - [@unfinished_games, @finished_games].flatten.each do |game|
-        - other = game.other_participant(@participant)
-        %tr
-          %td.game-score-form
-            .me{class: game.winner == @participant && "winner"}
-              Me
-            .score
-              = form_for game do |f|
-                %input.form-control{type: "text", name: "game[score_#{@participant.id}]", value: game.score_for(@participant)}
-                .dash<> &nbsp;-&nbsp;
-                %input.form-control{type: "text", name: "game[score_#{other.id}]", value: game.score_for(other)}
-                %input.save(type="submit" value="Save")
-            .them{class: game.winner == other && "winner"}
-              = other.player.display_name
-            .save
-              %button.submit.btn.btn-sm.btn-default(type="submit") Save
+        - if @unfinished_games.any?
+          %p #{pluralize(@unfinished_games.count, 'game')} left to play
+        - else
+          %p No games left to play this round!
 
-.row
-  .col-md-12
-    %h2 Your tier:
+          %p Check out of the <a href="#{url_for(@round)}">current standings</a> in this round.
 
-  %table.table.table-striped.col-md-12
-    %tbody
-      = render @tier
+  .row
+    %table.table.table-striped.col-md-12
+      %tbody
+        - [@unfinished_games, @finished_games].flatten.each do |game|
+          - other = game.other_participant(@participant)
+          %tr
+            %td.game-score-form
+              .me{class: game.winner == @participant && "winner"}
+                Me
+              .score
+                = form_for game do |f|
+                  %input.form-control{type: "text", name: "game[score_#{@participant.id}]", value: game.score_for(@participant)}
+                  .dash<> &nbsp;-&nbsp;
+                  %input.form-control{type: "text", name: "game[score_#{other.id}]", value: game.score_for(other)}
+                  %input.save(type="submit" value="Save")
+              .them{class: game.winner == other && "winner"}
+                = other.player.display_name
+              .save
+                %button.submit.btn.btn-sm.btn-default(type="submit") Save
 
+  .row
+    .col-md-12
+      %h2 Your tier:
+
+    %table.table.table-striped.col-md-12
+      %tbody
+        = render @tier

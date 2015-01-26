@@ -21,7 +21,7 @@ class RoundsController < ApplicationController
   end
 
   def show
-    @round ||= Round.find(params[:id])
+    @round ||= Round.includes(:participants => [:game, :tier]).find(params[:id])
 
     @tiers = @round.participants.includes(:player).group_by(&:tier_id).map do |tier_id, participants|
       [Tier.find(tier_id), participants]
