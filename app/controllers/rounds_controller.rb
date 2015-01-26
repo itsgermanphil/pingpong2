@@ -1,18 +1,24 @@
 
 class RoundsController < ApplicationController
 
-  before_filter :require_user, only: %w(next)
+  before_filter :require_user, only: %w(current next join withdraw)
 
   def index
     @rounds = Round.order('id desc')
   end
 
+  # GET /rounds/current
+  # Show the current user the state of their current round, which is the last
+  # round that they participated in/saw when logged in
   def current
     @round = current_user.try(:last_round) || Round.find_or_build_current_round
     show
     render 'show'
   end
 
+  # GET /rounds/next
+  # Move the current user to the next round, so that when they log in they'll
+  # see scores from the that round
   def next
     round = Round.find_or_build_current_round
     current_user.last_round = round

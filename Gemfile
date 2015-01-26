@@ -43,7 +43,7 @@ gem 'rack-timeout'
 group :development, :test do
   gem 'thin'
   gem 'rspec-rails'
-  gem 'factory_girl'
+  gem "factory_girl_rails", "~> 4.0"
   gem 'pry'
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -54,6 +54,7 @@ group :development, :test do
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
+  gem 'minitest'
 end
 
 gem 'rails_12factor', group: :production

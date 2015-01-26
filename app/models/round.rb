@@ -41,7 +41,6 @@ class Round < ActiveRecord::Base
   end
 
   def self.build_next_round(prev_round)
-
     raise "Cannot build round while a round is in progress" if Round.active.any? || prev_round.in_progress?
 
     Round.transaction do
