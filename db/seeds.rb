@@ -46,7 +46,7 @@ seed_round.keys.each.with_index do |tier_name, index|
   Tier.where(name: tier_name, level: index).first_or_create!
 end
 
-round = Round.first_or_create!(id: 1)
+round = Round.first_or_create!(id: 1, start_date: "2015-01-19 11:50:03 -0500")
 
 seed_round.each do |tier_name, players|
   puts "finding #{tier_name}"
