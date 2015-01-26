@@ -1,44 +1,42 @@
 
-%h2 Round ##{@round.id} -  #{pluralize(@games.unfinished.count, 'game')} left to play
+.row
+  .col-md-12
+    %h3= @participant.player.name
+    %h4 Round ##{@round.round_number}
+    %h4 #{pluralize(@games.unfinished.count, 'game')} left to play
+    %h4 Score this round: #{@participant.points} points
 
-%h3 #{@participant.player.name}'s score: #{@games.finished.map { |g| g.points_for(@participant) }.inject(&:+)}
-
-%table.table.table-striped
-  %thead
-    %tr{class: @participant.tier.name.downcase.underscore}
-      %th(colspan="8") Tier #{@participant.tier.name}
-  %tbody
-    - @games.finished.each do |game|
-      - other = game.other_participant(@participant)
-      %tr
-        %td.game-score
-          = form_for game do |f|
-            .me
-              - if game.winner == @participant
-                %b
+.row
+  %table.table.table-striped.col-md-12
+    %thead
+      %tr{class: @participant.tier.name.downcase.underscore}
+        %th(colspan="8") Tier #{@participant.tier.name}
+    %tbody
+      - @games.finished.each do |game|
+        - other = game.other_participant(@participant)
+        %tr
+          %td.game-score
+            = form_for game do |f|
+              .me
+                - if game.winner == @participant
+                  %b
+                    = @participant.player.name
+                - else
                   = @participant.player.name
-              - else
-                = @participant.player.name
-            .score
-              = game.score_for(@participant)
-            .dash<> &nbsp;-&nbsp;
-            .score
-              = game.score_for(other)
-            .them
-              - if game.winner == other
-                %b
+              .score
+                #{game.score_for(@participant)}&nbsp;-&nbsp;#{game.score_for(other)}
+              .them
+                - if game.winner == other
+                  %b
+                    = other.player.name
+                - else
                   = other.player.name
-              - else
-                = other.player.name
 
 
-    - @games.unfinished.each do |game|
-      %tr
-        %td.game-score
-          .me
-            = @participant.player.name
-          .score N/A
-          .dash<> &nbsp;-&nbsp;
-          .score N/A
-          .them
-            = game.other_participant(@participant).player.name
+      - @games.unfinished.each do |game|
+        %tr
+          %td.game-score
+            .me= @participant.player.name
+            .score
+              N/A&nbsp;-&nbsp;N/A
+            .them= game.other_participant(@participant).player.name
