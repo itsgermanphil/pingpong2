@@ -38,7 +38,7 @@
           - other = game.other_participant(@participant)
           %tr
             %td.game-score-form
-              .me{class: game.winner == @participant && "winner"}
+              %a.me{href: url_for([@round, @participant]), class: game.winner == @participant && "winner"}
                 Me
               .score
                 = form_for game do |f|
@@ -46,7 +46,7 @@
                   .dash<> &nbsp;-&nbsp;
                   %input.form-control{type: "text", name: "game[score_#{other.id}]", value: game.score_for(other)}
                   %input.save(type="submit" value="Save")
-              .them{class: game.winner == other && "winner"}
+              %a.them{href: url_for([@round, other]), class: game.winner == other && "winner"}
                 = other.player.display_name
               .save
                 %button.submit.btn.btn-sm.btn-default(type="submit") Save
