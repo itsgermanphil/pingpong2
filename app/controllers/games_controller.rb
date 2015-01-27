@@ -1,11 +1,14 @@
 
 class GamesController < ApplicationController
 
+  before_filter :require_user
+
   def update
     @game = Game.find(params[:id])
 
-    @game.update(game_params)
+    raise ActiveRecord::RecordNotFound unless @game.participant1.player == current_user || @game.participant2.player == current_user
 
+    @game.update(game_params)
     redirect_to root_path, notice: 'Game updated'
   end
 

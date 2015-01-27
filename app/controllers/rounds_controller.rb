@@ -1,7 +1,7 @@
 
 class RoundsController < ApplicationController
 
-  before_filter :require_user, only: %w(current next join withdraw)
+  before_filter :require_user, except: %w(index show)
 
   def index
     @rounds = Round.order('id desc')
