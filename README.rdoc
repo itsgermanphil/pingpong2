@@ -1,28 +1,15 @@
 == README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
-
-Things you may want to cover:
-
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+This is the 500px in-house app for tracking our on-going table tennis tournament.
 
 
-Please feel free to use a different markup language if you do not plan to run
-<tt>rake doc:app</tt>.
+To log in, you'll need a consumer key/secret to connect with 500px. See https://500px.com/settings/applications.
+
+Set your consumer key/secret as environment variables.
+
+You can do this easily by creating a file called `start.sh` in the root of your project:
+
+    #!/bin/bash
+    CONSUMER_KEY=XXX CONSUMER_SECRET=yyy ./rails server -p 3000
+    
+You'll also need PostgresSQL.
