@@ -1,7 +1,7 @@
 
 .row
   .col-md-1.col-sm-2.col-xs-5
-    %img{src: @participant.player.image || default_image_path, width: 128}
+    %img{src: @participant.player.image || default_avatar_image_path, width: 128}
   .col-md-1.col-sm-1.col-xs-1
   .col-md-9.col-sm-9.col-xs-7
     %h4= @participant.player.name

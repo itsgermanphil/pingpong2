@@ -15,7 +15,7 @@
       .media
         .media-left
           = link_to player do
-            %img.media-object{src: player.image || default_image_path, width: 64}
+            %img.media-object{src: player.image || default_avatar_image_path, width: 64}
         .media-body
           = link_to player do
             %h4.media-heading= player.nickname
