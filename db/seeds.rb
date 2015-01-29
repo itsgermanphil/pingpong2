@@ -13,32 +13,32 @@ unless Rails.env.test?
       'luc.luxton@gmail.com',
       'xuepaul.xp@gmail.com',
       'mckayjamesa@gmail.com',
-      'brandonyeh2934@gmail.com',
+      'brandonyeh2934@gmail.com'
     ], 'Ambassador' => [
       'jun@dragonflystudios.ca',
       'hailey@500px.com',
       'mikelerner.me@gmail.com',
       '1@alexf.ca',
-      'mralefina@gmail.com',
+      'mralefina@gmail.com'
     ], 'Awesome' => [
       'natta@500px.com',
       'maryna.bilousova@gmail.com',
       'shutsa@gmail.com',
       'kaitlyn2004@gmail.com',
-      'andyyangstar@gmail.com',
+      'andyyangstar@gmail.com'
     ], 'Plus' => [
       'zimu.liu@gmail.com',
       'iamjeffshin@gmail.com',
       'tim.gaweco@gmail.com',
       'dustin@dustinplett.ca',
-      'tighe.michael@gmail.com',
+      'tighe.michael@gmail.com'
     ], 'Free' => [
       'catalin.bordianu@gmail.com',
       'me@meagar.net',
       'renat.g@gmail.com',
       'ryan.ming@gmail.com',
       'bpfott@gmail.com',
-      'eric.akaoka@gmail.com',
+      'eric.akaoka@gmail.com'
     ]
   }
 

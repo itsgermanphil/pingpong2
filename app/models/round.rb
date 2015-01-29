@@ -1,3 +1,8 @@
+# Rounds are the top-level unit of game time
+# Each round is a mini-tournament, sub-divided into "tiers"
+# A round is over when each player has played every other player in their tier
+# When one round starts, the next one automatically beings the next time a
+# player makes a request for the "current "round.
 class Round < ActiveRecord::Base
   has_many :participants
   has_many :players, through: :participants
@@ -21,7 +26,7 @@ class Round < ActiveRecord::Base
   end
 
   def create_games
-    participants.group_by(&:tier_id).each do |tier_id, participants|
+    participants.group_by(&:tier_id).each do |_, participants|
       participants.combination(2) do |p1, p2|
         build_game(p1, p2)
       end
@@ -41,7 +46,9 @@ class Round < ActiveRecord::Base
   end
 
   def self.build_next_round(prev_round)
-    raise "Cannot build round while a round is in progress" if Round.active.any? || prev_round.in_progress?
+    if Round.active.any? || prev_round.in_progress?
+      fail 'Cannot build round while a round is in progress'
+    end
 
     Round.transaction do
       new_groups = Hash[Tier.pluck(:level).sort.map { |level| [level, []] }]
@@ -83,11 +90,9 @@ class Round < ActiveRecord::Base
     # See if this player is already in this round
     return if participants.where(player_id: player.id).exists?
 
-    tier ||= tiers.order(:level).reverse.min_by { |tier| tier.participants(self).count }
-
     Round.transaction do
       p1 = Participant.create!(round_id: id,
-                               tier_id: tier.id,
+                               tier_id: (tier || smallest_tier).id,
                                player_id: player.id)
 
       create_games_for(p1)
@@ -95,11 +100,14 @@ class Round < ActiveRecord::Base
     end
   end
 
+  def smallest_tier
+    tiers.order(:level).reverse.min_by { |tier| tier.participants(self).count }
+  end
+
   def create_games_for(p1)
+    others = p1.tier.participants(self).where('player_id != ?', p1.player.id)
     Round.transaction do
-      p1.tier.participants(self).where('player_id != ?', p1.player.id).each do |p2|
-        build_game(p1, p2)
-      end
+      others.each { |p2| build_game(p1, p2) }
     end
   end
 
@@ -109,7 +117,6 @@ class Round < ActiveRecord::Base
     self.end_date ||= Time.now
     save!
   end
-
 
   private
 
