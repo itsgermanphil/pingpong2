@@ -33,7 +33,7 @@ class RoundsController < ApplicationController
       [Tier.find(tier_id), participants]
     end
 
-    @tiers.sort_by { |tier,participants| tier.level }
+    @tiers.sort_by! { |tier,participants| tier.level }
 
     @tiers = Hash[@tiers]
   end
