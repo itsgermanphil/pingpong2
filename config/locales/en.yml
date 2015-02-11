@@ -43,6 +43,13 @@ en:
         '<p>We''re using the following rules, with <b>one exception</b>: We play <b>one game</b>, not best of 7 or best of 5</p><br><br>
         <iframe width="560" height="315" src="//www.youtube.com/embed/dGs-w-pHieg" frameborder="0" allowfullscreen></iframe>'
     -
+      title: Why do people keep telling me my serve is illegal?
+      body_html:
+        '<p><b>Because it is!</b></p>
+        <p>It''s hard enough to return a completely legal serve. The <a href="http://tabletennis.about.com/od/thelawsoftabletennis/a/serveandreturn.-6Ot.htm">rules are complex</a>, but ignoring them can make your serve almost impossible to return and very frustraiting for your opponent.</p>
+        <p><b>TLDR</b>: The ball must be visible to your opponent at all times. Hold the ball flat in the palm of your hand, behind your edge of the table and clearly visible to your opponent. Throw it straight up and without spin, at least 16cm, and allow it to fall at least 16cm before hitting it.</p>'
+
+    -
       title: How do I use the app?
       body_html: '<p>Visit the app. From the homepage, you will be prompted to log in with your 500px account.</p>
         <p>After you''ve logged in, you''ll see a list of the games you have to play in this round of the tournament</p>
