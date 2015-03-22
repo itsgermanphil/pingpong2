@@ -1,0 +1,43 @@
+- other = game.other_participant(participant)
+- verbose = defined?(verbose) && verbose
+%tr
+  %td.game-score
+    = form_for game do |f|
+      .me
+        - if game.winner == participant
+          %b
+            = participant.player.name
+            - if verbose
+              (#{elo game.elo_rating_in(participant)})
+        - else
+          = participant.player.name
+          (#{elo game.elo_rating_in(participant)})
+      .score
+        #{game.score_for(participant)}&nbsp;-&nbsp;#{game.score_for(other)}
+      .them
+        - if game.winner == other
+          %b
+            = other.player.name
+            (#{elo game.elo_rating_in(other)})
+        - else
+          = other.player.name
+          (#{elo game.elo_rating_in(other)})
+
+  - if verbose
+    %td.round
+      - if game.round.public
+        = link_to "Round #{game.round.round_number}", game.round
+      - else
+        = link_to '1-vs-1', game.round
+    %td.rating
+      = link_to game do
+        = elo game.elo_rating_out(participant)
+        - if game.winner == participant
+          %span.glyphicon.glyphicon-arrow-up(style="color:#0f0")
+        - else
+          %span.glyphicon.glyphicon-arrow-down(style="color:#f00")
+    %td.gain
+      - if game.elo_rating1_in
+        = with_sign elo (game.elo_rating_out(participant) - game.elo_rating_in(participant))
+    %td.date
+      = game.finished_at.to_s(:short)

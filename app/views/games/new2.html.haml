@@ -1,0 +1,23 @@
+#new-game-form.row
+  .col-md-12(style="text-align:center")
+    = form_for @game do |f|
+      = f.hidden_field :player2_id, value: @player2.id
+
+      .form-group
+        = f.label :score1, "#{current_user.name} (#{current_user.elo_rating.round(1)})"
+
+      .form-group
+        = f.text_field :score1, width: 3, style: "width:3em"
+
+      .form-group
+        vs
+
+      .form-group
+        = f.text_field :score2, width: 3, style: "width:3em"
+
+      .form-group
+        %label.control-label= "#{@player2.name} (#{@player2.elo_rating.round(1)})"
+
+      .form-group
+        %a.btn.btn-danger(href="/" data-confirm="are you sure?") Cancel
+        = f.submit 'Save', class: 'btn btn-default btn-primary'

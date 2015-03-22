@@ -4,7 +4,7 @@ class RoundsController < ApplicationController
   before_filter :require_user, except: %w(index show)
 
   def index
-    @rounds = Round.order('id desc')
+    @rounds = Round.tournament.order('id desc')
   end
 
   # GET /rounds/current
@@ -28,6 +28,11 @@ class RoundsController < ApplicationController
 
   def show
     @round ||= Round.includes(:participants => :tier).find(params[:id])
+
+    unless @round.public
+      render 'free_play'
+      return
+    end
 
     @tiers = @round.participants.includes(:player).group_by(&:tier_id).map do |tier_id, participants|
       [Tier.find(tier_id), participants]

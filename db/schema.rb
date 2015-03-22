@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150125175536) do
+ActiveRecord::Schema.define(version: 20150324143230) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,11 @@ ActiveRecord::Schema.define(version: 20150125175536) do
     t.integer  "score2"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
+    t.float    "elo_rating1_in"
+    t.float    "elo_rating1_out"
+    t.float    "elo_rating2_in"
+    t.float    "elo_rating2_out"
+    t.datetime "finished_at"
   end
 
   add_index "games", ["participant1_id"], name: "index_games_on_participant1_id", using: :btree
@@ -57,13 +62,15 @@ ActiveRecord::Schema.define(version: 20150125175536) do
     t.string   "name"
     t.string   "email"
     t.string   "avatar"
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.string   "uid"
     t.integer  "last_round_id"
     t.string   "image"
     t.string   "nickname"
-    t.boolean  "admin",         default: false, null: false
+    t.boolean  "admin",         default: false,  null: false
+    t.float    "elo_rating",    default: 1000.0, null: false
+    t.boolean  "active",        default: true,   null: false
   end
 
   create_table "players_tiers", id: false, force: :cascade do |t|
@@ -77,9 +84,10 @@ ActiveRecord::Schema.define(version: 20150125175536) do
   create_table "rounds", force: :cascade do |t|
     t.datetime "start_date"
     t.datetime "end_date"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
     t.integer  "round_number"
+    t.boolean  "public",       default: true, null: false
   end
 
   create_table "tiers", force: :cascade do |t|

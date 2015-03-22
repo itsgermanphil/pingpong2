@@ -3,6 +3,8 @@ class Round < ActiveRecord::Base
   has_many :players, through: :participants
   has_many :games
 
+  scope :tournament, -> { where(public: true) }
+
   before_validation :assign_round_number
 
   validates :start_date, presence: true
@@ -10,6 +12,10 @@ class Round < ActiveRecord::Base
   validates :round_number, presence: true
 
   scope :active, -> { where(end_date: nil) }
+
+  def self.free_play_round
+    self.unscoped.where(public: false).first
+  end
 
   def tiers
     Tier.where(id: participants.pluck(:tier_id).uniq)
@@ -104,6 +110,7 @@ class Round < ActiveRecord::Base
   end
 
   def check_for_completion
+    return unless self.public == true
     return unless games.all?(&:finished?)
 
     self.end_date ||= Time.now

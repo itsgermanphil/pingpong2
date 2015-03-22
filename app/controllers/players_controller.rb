@@ -1,12 +1,11 @@
 
 class PlayersController < ApplicationController
 
-  before_filter :require_admin
 
   before_filter :find_player, only: %i(show edit update destroy)
 
   def index
-    @players = Player.order(:id).all
+    @players = Round.free_play_round.players.active.order('elo_rating desc').all.uniq
   end
 
   def show

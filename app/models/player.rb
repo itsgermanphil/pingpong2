@@ -10,18 +10,39 @@ class Player < ActiveRecord::Base
 
   before_validation :normalize_email
 
+  scope :active, -> { where(active: true) }
+
   class AuthorizationError < StandardError; end
+
+  def self.recalculate_ratings!(method = :apply_elo_ratings)
+    transaction do
+      Game.update_all(
+        elo_rating1_in: nil,
+        elo_rating2_in: nil,
+        elo_rating1_out: nil,
+        elo_rating2_out: nil
+      )
+
+      Player.update_all(elo_rating: 1000)
+
+      games = Round.free_play_round.games.finished.order(:finished_at)
+
+      games.each do |g|
+        g.send(method)
+      end
+    end
+  end
 
   def normalize_email
     self.email = self.email.try(:downcase).try(:strip)
   end
 
   def games(round)
-    Participant.where(player: self).map {|p| p.game}.select { |game| game.tier.round == round }
+    Participant.where(player: self).map(&:game).select { |game| game.tier.round == round }
   end
 
-  def all_games
-    Participant.where(player: self).map {|p| p.game}
+  def all_finished_games
+    Participant.where(player: self).flat_map(&:games).uniq.select(&:finished?).sort_by(&:finished_at)
   end
 
   def round_score(round = Round.active)
@@ -29,11 +50,18 @@ class Player < ActiveRecord::Base
   end
 
   def total_score
-    calc_score all_games
+    calc_score all_finished_games
   end
 
   def display_name
     name
+  end
+
+  def current_tier
+    # Find the last round in which the player participated in
+    public_rounds = Round.where(public: true)
+    p = Participant.order('id desc').where(player_id: id, round_id: public_rounds).first
+    p.try(:tier)
   end
 
   private

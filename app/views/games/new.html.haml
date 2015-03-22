@@ -1,0 +1,17 @@
+
+.row
+  .col-md-12(style="text-align:center")
+    %h1 HEAVEN OR HELL
+
+.row
+  .col-md-12(style="text-align:center")
+    = form_tag '/games/new2', method: 'get' do |f|
+      .form-group
+        = current_user.name
+      .form-group
+        vs
+      .form-group
+        = select_tag :player2_id, options_for_select((Player.all.order(:name).to_a - [current_user]).map { |p| [p.name, p.id] })
+
+      .form-group
+        = submit_tag "Lets Rock", class: 'btn btn-default btn-primary'

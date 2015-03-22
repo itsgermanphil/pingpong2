@@ -1,12 +1,51 @@
+- games = @player.all_finished_games
+- wins = games.select { |g| g.winner.player_id == @player.id }
+- losses = games.select { |g| g.winner.player_id != @player.id }
 
 .row
-  .col-md-3
-    %img{src: @player.image || default_avatar_image_path}
-  .col-md-1
-  .col-md-8
-    %ul
-      %li Username: <b>#{@player.nickname}</b>
-      %li Name: <b>#{@player.name}</b>
+  .col-md-12
+    .media
+      .media-left
+        %img.media-object{src: @player.image || default_avatar_image_path, width: 160}
+      .media-body
+        %h2.media-heading= @player.name
+        %p= @player.nickname
 
+        .games Games: <b>#{games.count}</b>
+        .wins Wins: <b>#{wins.count}</b>
+        .losses Losses: <b>#{losses.count}</b>
+        .ratio Wins:losses <b>#{(wins.count.to_f/losses.count.to_f).round(2)}</b>
+        .elo Elo Rating: <b>#{elo @player.elo_rating}</b>
 
-    %a.btn.btn-danger{href: player_path(@player)}(data-method="delete" data-confirm="Are you sure? This cannot be undone.") Delete Player
+    - if current_user.try(:admin)
+      %a.btn.btn-danger{href: player_path(@player)}(data-method="delete" data-confirm="Are you sure? This cannot be undone.") Delete Player
+
+  .row
+    .col-md-12
+      %h3 Games (#{games.count})
+      %br
+
+      %table.table.table-striped
+        %thead
+          %tr
+            %th Game
+            %th Round
+            %th Elo Rating
+            %th Gain
+            %th Date
+        %tbody
+          - games.reverse.each do |game|
+            = render 'games/finished', game: game, participant: game.participant_for(@player), verbose: true
+
+  .row
+    .col-md-12
+      %h3 Rating over Time
+  .row
+    #graph(style="height: 300px")
+
+:javascript
+  window.plots = #{games.select { |g| g.elo_rating1_in.present? }.map { |g| g.elo_rating_in(g.participant_for(@player)) }.concat([@player.elo_rating]).map.with_index { |s,i| [i, s] }.as_json };
+
+:coffee
+  $ ->
+    $.plot($('#graph'), [{ data: plots, lines: { show: true }, points: { show: true } }], { xaxis: { show: false }} )

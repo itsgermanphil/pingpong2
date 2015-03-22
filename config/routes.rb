@@ -27,7 +27,9 @@ Rails.application.routes.draw do
 
   resource :profile, only: %i(show edit update)
 
-  resources :games, only: %i(show update)
+  resources :games, only: %i(new create show update) do
+    collection { get 'new2' }
+  end
 
   root 'home#index'
 end

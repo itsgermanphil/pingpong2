@@ -15,26 +15,7 @@
       %tr{class: @participant.tier.name.downcase.underscore}
         %th(colspan="8") Tier #{@participant.tier.name}
     %tbody
-      - @games.finished.each do |game|
-        - other = game.other_participant(@participant)
-        %tr
-          %td.game-score
-            = form_for game do |f|
-              .me
-                - if game.winner == @participant
-                  %b
-                    = @participant.player.name
-                - else
-                  = @participant.player.name
-              .score
-                #{game.score_for(@participant)}&nbsp;-&nbsp;#{game.score_for(other)}
-              .them
-                - if game.winner == other
-                  %b
-                    = other.player.name
-                - else
-                  = other.player.name
-
+      = render partial: 'games/finished', collection: @games.finished, as: :game, locals: { participant: @participant }
 
       - @games.unfinished.each do |game|
         %tr

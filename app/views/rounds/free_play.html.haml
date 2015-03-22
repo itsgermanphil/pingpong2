@@ -1,0 +1,10 @@
+- cache [@round] do
+  .row
+    .col-md-12
+      %h2 Free play
+  .row
+    .col-md-12
+      %table.table.table-default
+        %tbody
+          - @round.games.order('finished_at DESC').each do |game|
+            = render 'games/finished', game: game, participant: game.winner, verbose: true

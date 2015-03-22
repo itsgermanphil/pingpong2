@@ -1,24 +1,36 @@
 
-
 .row
   %h2.col-md-12
-    Players List
+    1v1 Rankings
 
 .row
   .col-md-12
-    .alert.alert-danger
-      %p This is an Admin-only feature. Use this to clean up accidentially created accounts. Deletion is permanent!
+    %h4 Not on this list?
+    %h4 Challenge another player to a 1v1 game!
 
 .row
   .players-list.col-md-12
-    - @players.each do |player|
-      .media
-        .media-left
-          = link_to player do
-            %img.media-object{src: player.image || default_avatar_image_path, width: 64}
-        .media-body
-          = link_to player do
-            %h4.media-heading= player.nickname
-            %p= player.name
+    %table.table.table-striped
+      %tr
+        %th Player
+        %th Tier
+        %th Elo Rating
+
+      - @players.each.with_index do |player, index|
+        %tr
+          %td
+            .media
+              .media-left
+                = link_to player do
+                  %img.media-object{src: player.image || default_avatar_image_path, width: 64}
+              .media-body
+                = link_to player do
+                  %h4.media-heading ##{index + 1}: #{player.name}
+                  %p= player.nickname
+          %td
+            / Some players might not have tiers
+            = player.current_tier.try(:name)
+          %td
+            = player.elo_rating.round(1)
 
 

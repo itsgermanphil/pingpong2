@@ -1,11 +1,11 @@
 class Participant < ActiveRecord::Base
   belongs_to :round
-  belongs_to :player
   belongs_to :tier
+  belongs_to :player
 
   validates :round, presence: true
-  validates :player, presence: true
   validates :tier, presence: true
+  validates :player, presence: true
 
   after_destroy :destroy_games
 
