@@ -12,25 +12,23 @@
   .players-list.col-md-12
     %table.table.table-striped
       %tr
+        %th Rank
         %th Player
-        %th Tier
-        %th Elo Rating
+        %th Rating
 
       - @players.each.with_index do |player, index|
         %tr
-          %td
+          %td.rank ##{index + 1}
+          %td.player
             .media
               .media-left
                 = link_to player do
                   %img.media-object{src: player.image || default_avatar_image_path, width: 64}
               .media-body
                 = link_to player do
-                  %h4.media-heading ##{index + 1}: #{player.name}
+                  %h4.media-heading #{player.name}
                   %p= player.nickname
-          %td
-            / Some players might not have tiers
-            = player.current_tier.try(:name)
-          %td
-            = player.elo_rating.round(1)
+          %td.rating
+            = elo player.elo_rating_with_bonus
 
 

@@ -4,7 +4,7 @@
       = f.hidden_field :player2_id, value: @player2.id
 
       .form-group
-        = f.label :score1, "#{current_user.name} (#{current_user.elo_rating.round(1)})"
+        = f.label :score1, "#{current_user.name} (#{elo current_user.elo_rating})"
 
       .form-group
         = f.text_field :score1, width: 3, style: "width:3em"
@@ -16,7 +16,7 @@
         = f.text_field :score2, width: 3, style: "width:3em"
 
       .form-group
-        %label.control-label= "#{@player2.name} (#{@player2.elo_rating.round(1)})"
+        %label.control-label= "#{@player2.name} (#{elo @player2.elo_rating})"
 
       .form-group
         %a.btn.btn-danger(href="/" data-confirm="are you sure?") Cancel

@@ -22,6 +22,7 @@ class Game < ActiveRecord::Base
   scope :for_participant, ->(p) { where('participant1_id = ? or participant2_id = ?', p.id, p.id) }
   scope :unfinished, -> { where(finished_at: nil) }
   scope :finished, -> { where('finished_at is not null') }
+  scope :all_1v1_games, -> { where('elo_rating1_in is not null') }
 
   before_save :update_finished_at
 
@@ -33,13 +34,13 @@ class Game < ActiveRecord::Base
 
     p1 = {
       rating: player1.elo_rating,
-      games: player1.all_finished_games.select { |g| g.finished_at <= finished_at }.count,
+      games: player1.all_finished_1v1_games.select { |g| g.finished_at <= finished_at }.count,
       score: score1
     }
 
     p2 = {
       rating: player2.elo_rating,
-      games: player2.all_finished_games.select { |g| g.finished_at <= finished_at }.count,
+      games: player2.all_finished_1v1_games.select { |g| g.finished_at <= finished_at }.count,
       score: score2
     }
 

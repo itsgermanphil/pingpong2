@@ -28,7 +28,7 @@
         .wins Wins: <b>#{wins.count}</b>
         .losses Losses: <b>#{losses.count}</b>
         .ratio Wins:losses <b>#{(wins.count.to_f/losses.count.to_f).round(2)}</b>
-        .elo Elo Rating: <b>#{elo @player.elo_rating}</b>
+        .elo Elo Rating: <b>#{elo @player.elo_rating_with_bonus}</b>
 
     - if current_user.try(:admin)
       %a.btn.btn-danger{href: player_path(@player)}(data-method="delete" data-confirm="Are you sure? This cannot be undone.") Delete Player

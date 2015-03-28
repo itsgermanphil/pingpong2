@@ -6,6 +6,9 @@ class PlayersController < ApplicationController
 
   def index
     @players = Round.free_play_round.players.active.order('elo_rating desc').all.uniq
+    @players = @players.sort_by do |p|
+      p.elo_rating_with_bonus
+    end.reverse!
   end
 
   def show

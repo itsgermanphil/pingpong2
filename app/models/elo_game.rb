@@ -36,41 +36,16 @@ class EloGame
   end
 
   def k_factor(p1, p2)
-    # Default (dumb) k-factors
-    if p1[:games] <= 30
-      return 25.0
-    end
-    return 15.0
 
-    # TODO:
+    # If the user is very new, move a large number of points
+    return 32 if p1[:games] <= 30
 
-    # The logic behind my k-factor is this:
-    # If the player who won the game is "new", use a bigger k-factor
-    # If the player who won the game is not new, use a smaller k-factor
-    # The idea is that a player who just joined, who wins, should move up quicker
-    # A player who just joined and lost, should move down slower
 
-    (winner, loser) = (p1[:score] > p2[:score] ? [p1, p2] : [p2, p1])
+    # If the user is "professional", move the smallest number of points
+    return 16 if p1[:games] >= 30 && p1[:rating] >= 2400
 
-    # If the winner is very new, just move the maximum number of points
-    return 24 if winner[:games] < 30
-
-    # Both players are established, compute a "k" based on the amount of upset
-    #
-    # If p1 is strongly expected to win, but loses, return 10
-    # If p1 is storngly expected to lose, but wins, return 32
-    #
-    # This is scaled based on a 400 rating deficit, so that if p1 is 400 points lower
-    # than p2, but wins, the maximum amount of points get moved. If p1 is 1000 points lower,
-    # the same nmber of points move as if p1 is 400 points lower.
-    #
-    # My reasoning is that, outside of this range, an upset is likely a fluke
-    diff = loser[:rating] - winner[:rating]
-
-    k = 32 * (diff / 400.0)
-
-    # Return 10 <= k <= 24
-    [[32.0, k].min, 16.0].max
+    # otherwise, 24 is a good default
+    24
   end
 
   def actual(p1, p2)

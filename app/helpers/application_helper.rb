@@ -20,9 +20,9 @@ module ApplicationHelper
   end
   def arrow(n)
     if n > 0
-      arrow_up
+      up_arrow
     else
-      arrow_down
+      down_arrow
     end
   end
 

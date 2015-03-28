@@ -14,6 +14,14 @@ class Player < ActiveRecord::Base
 
   class AuthorizationError < StandardError; end
 
+  def rating_bonus
+    all_finished_1v1_games.select { |g| g.finished_at > 1.month.ago }.count.to_f * 1.5
+  end
+
+  def elo_rating_with_bonus
+    elo_rating + rating_bonus
+  end
+
   def self.recalculate_ratings!(method = :apply_elo_ratings)
     transaction do
       Game.update_all(
@@ -43,6 +51,10 @@ class Player < ActiveRecord::Base
 
   def all_finished_games
     Participant.where(player: self).flat_map(&:games).uniq.select(&:finished?).sort_by(&:finished_at)
+  end
+
+  def all_finished_1v1_games
+    all_finished_games.select { |g| g.elo_rating1_in.present? }
   end
 
   def round_score(round = Round.active)
