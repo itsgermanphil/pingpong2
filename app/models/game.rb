@@ -43,14 +43,15 @@ class Game < ActiveRecord::Base
       score: score2
     }
 
+
     # Record the state of player's Elo ratings for reporting, before and after this game
     self.elo_rating1_in = p1[:rating]
     self.elo_rating2_in = p2[:rating]
 
-    apply_elo_movement(p1, p2)
+    game = EloGame.new(p1, p2)
 
-    self.elo_rating1_out = player1.elo_rating = p1[:rating]
-    self.elo_rating2_out = player2.elo_rating = p2[:rating]
+    self.elo_rating1_out = player1.elo_rating = game.rating1_out
+    self.elo_rating2_out = player2.elo_rating = game.rating2_out
 
     player1.save!
     player2.save!
@@ -58,106 +59,6 @@ class Game < ActiveRecord::Base
     nil
   end
 
-  def apply_elo_movement(p1, p2)
-    movement = calc_elo_movement(p1, p2)
-    p1[:rating] += movement
-
-    movement = calc_elo_movement(p2, p1)
-    p2[:rating] += movement
-  end
-  # This function accepts two hashes representing the state of two players.
-  # Each hash should provide a rating, a score and a number of games played.
-  #
-  # From this, the function will calculate the correct K factor and return the number
-  # of points that should be added to player1's rating, and removed from player2's rating.
-  # In the case of player1 winning, this will be a positive number, for example, '10':
-  #   player1.rating += 10; player2.rating -= 10
-  #
-  # If player2 wins, this # will be a negative number ie, -10:
-  #   player1.rating += (-10), player2.rating -= (-10)
-  #
-  def calc_elo_movement(p1, p2)
-    # Elo ratings are basically:
-    # rating += (k_factor * (actual_score - expected_score)
-
-    actual = calc_actual(p1, p2)
-    expected = calc_expected(p1, p2)
-    k = calc_k_factor(p1, p2)
-
-    k * (actual - expected)
-  end
-
-  def calc_k_factor(p1, p2)
-    if p1[:games] <= 30
-      return 25
-    end
-    return 15
-
-    # The logic behind my k-factor is this:
-    # If the player who won the game is "new", use a bigger k-factor
-    # If the player who won the game is not new, use a smaller k-factor
-    # The idea is that a player who just joined, who wins, should move up quicker
-    # A player who just joined and lost, should move down slower
-
-    (winner, loser) = (p1[:score] > p2[:score] ? [p1, p2] : [p2, p1])
-
-    # If the winner is very new, just move the maximum number of points
-    return 24 if winner[:games] < 30
-
-    # Both players are established, compute a "k" based on the amount of upset
-    #
-    # If p1 is strongly expected to win, but loses, return 10
-    # If p1 is storngly expected to lose, but wins, return 32
-    #
-    # This is scaled based on a 400 rating deficit, so that if p1 is 400 points lower
-    # than p2, but wins, the maximum amount of points get moved. If p1 is 1000 points lower,
-    # the same nmber of points move as if p1 is 400 points lower.
-    #
-    # My reasoning is that, outside of this range, an upset is likely a fluke
-    diff = loser[:rating] - winner[:rating]
-
-    k = 32 * (diff / 400.0)
-
-    # Return 10 <= k <= 24
-    [[32.0, k].min, 16.0].max
-  end
-
-  def calc_actual(p1, p2)
-    # First, figure out the "actual" score. This is either:
-    # - 1.0 for a win
-    # - 0.0 for a loss
-    # - 0.5 for a draw (not applicable for ping pong)
-    score1 = p1.fetch(:score)
-    score2 = p2.fetch(:score)
-
-    actual = (score1 > score2 ? 1.0 : 0.0)
-  end
-
-  # Calculate the player's expected score (0..1), based on two ratings
-  # 0 indicates that player1 is expected to lose,
-  # 1 indicates that player1 is expected to win,
-  # 0.5 indicates a draw is expected.
-  #
-  # Examples:
-  #   1000 vs 1000, expected => 0.5 - draw is likely
-  #   2000 vs 1000, expected => 0.997 - p1 very likely to win
-  #   1000 vs 2000, epxected => 0.003 - p1 very likely to lose
-  def calc_expected(p1, p2)
-    r1 = p1.fetch(:rating)
-    r2 = p2.fetch(:rating)
-    e = 1.0 / (1.0 + 10**((r2 - r1) / 400.0))
-  end
-
-  # Calculate the number of points to move from r1 to r2
-  # This may be a negative number
-  # Inputs:
-  def calc_moved_points(score1, score2, rating1, rating2, k)
-    expected = calc_expected_score(rating1, rating2)
-
-    actual = score1 > score2 ? 1 : 0
-
-    points = k * (actual - expected)
-  end
 
   def elo_rating_in(participant)
     return elo_rating1_in if participant.id == participant1_id

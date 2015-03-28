@@ -17,20 +17,14 @@
   %h3
     #{p1.player.name}:
     = elo @game.elo_rating1_in
-    - if diff1 > 0
-      %span.glyphicon.glyphicon-arrow-up(style="color:#0f0")
-    - else
-      %span.glyphicon.glyphicon-arrow-down(style="color:#f00")
+    = arrow(diff1)
     = elo @game.elo_rating1_out
     (#{with_sign diff1})
   %h4 vs
   %h3
     #{p2.player.name}:
     =elo @game.elo_rating2_in
-    - if diff2 > 0
-      %span.glyphicon.glyphicon-arrow-up(style="color:#0f0")
-    - else
-      %span.glyphicon.glyphicon-arrow-down(style="color:#f00")
+    = arrow(diff2)
     =elo @game.elo_rating2_out
     (#{with_sign diff2})
 

@@ -33,9 +33,9 @@
       = link_to game do
         = elo game.elo_rating_out(participant)
         - if game.winner == participant
-          %span.glyphicon.glyphicon-arrow-up(style="color:#0f0")
+          = up_arrow
         - else
-          %span.glyphicon.glyphicon-arrow-down(style="color:#f00")
+          = down_arrow
     %td.gain
       - if game.elo_rating1_in
         = with_sign elo (game.elo_rating_out(participant) - game.elo_rating_in(participant))

@@ -1,6 +1,19 @@
-- games = @player.all_finished_games
-- wins = games.select { |g| g.winner.player_id == @player.id }
-- losses = games.select { |g| g.winner.player_id != @player.id }
+:ruby
+  games = @player.all_finished_games
+  wins = games.select { |g| g.winner.player_id == @player.id }
+  losses = games.select { |g| g.winner.player_id != @player.id }
+
+  # For producing the graph. Finall games that have an elo-rating
+  elo_games = games.select { |g| g.elo_rating1_in.present? }
+
+  # Map them to an array of ratings for the given player
+  graph_points = elo_games.map { |g| g.elo_rating_in(g.participant_for(@player)) }
+
+  # Add the players current score to the end of the graph
+  graph_points.concat([@player.elo_rating])
+
+  # Turn it into [[x1,y1], [x2,y2]] for graphing
+  graph_points.map!.with_index { |s,i| [i, s] }
 
 .row
   .col-md-12
@@ -44,7 +57,7 @@
     #graph(style="height: 300px")
 
 :javascript
-  window.plots = #{games.select { |g| g.elo_rating1_in.present? }.map { |g| g.elo_rating_in(g.participant_for(@player)) }.concat([@player.elo_rating]).map.with_index { |s,i| [i, s] }.as_json };
+  window.plots = #{graph_points.to_json};
 
 :coffee
   $ ->
