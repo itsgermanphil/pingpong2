@@ -3,25 +3,18 @@
 %tr
   %td.game-score
     = form_for game do |f|
-      .me
-        - if game.winner == participant
-          %b
-            = participant.player.name
-            - if verbose
-              (#{elo game.elo_rating_in(participant)})
-        - else
+      .me{class: game.winner == participant && 'winner'}
+        = link_to participant.player do
           = participant.player.name
-          (#{elo game.elo_rating_in(participant)})
+          - if verbose && game.elo_rating_in(participant)
+            (#{elo game.elo_rating_in(participant)})
       .score
         #{game.score_for(participant)}&nbsp;-&nbsp;#{game.score_for(other)}
-      .them
-        - if game.winner == other
-          %b
-            = other.player.name
-            (#{elo game.elo_rating_in(other)})
-        - else
+      .them{class: game.winner == other && 'winner'}
+        = link_to other.player do
           = other.player.name
-          (#{elo game.elo_rating_in(other)})
+          - if verbose && game.elo_rating_in(other)
+            (#{elo game.elo_rating_in(other)})
 
   - if verbose
     %td.round
