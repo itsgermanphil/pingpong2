@@ -71,7 +71,7 @@ class Round < ActiveRecord::Base
         end
       end
 
-      new_round = Round.create!(start_date: Time.now)
+      new_round = Round.create!(start_date: Time.now, public: true)
 
       new_groups.each do |level, players|
         tier = Tier.find_by!(level: level)

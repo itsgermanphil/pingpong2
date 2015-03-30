@@ -22,6 +22,10 @@ class Player < ActiveRecord::Base
     elo_rating + rating_bonus
   end
 
+  def short_name
+    name.split(' ').map(&:first).join('')
+  end
+
   def self.recalculate_ratings!(method = :apply_elo_ratings)
     transaction do
       Game.update_all(

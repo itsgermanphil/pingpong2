@@ -28,3 +28,5 @@
     =elo @game.elo_rating2_out
     (#{with_sign diff2})
 
+  In: #{link_to round_name(@game.round), @game.round}
+  On: #{@game.finished_at.to_s(:short)}

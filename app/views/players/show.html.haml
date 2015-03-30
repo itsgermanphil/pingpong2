@@ -42,10 +42,10 @@
         %thead
           %tr
             %th Game
-            %th Round
+            %th.hidden-xs Round
             %th Elo Rating
-            %th Gain
-            %th Date
+            %th.hidden-xs Gain
+            %th.hidden-xs Date
         %tbody
           - games.reverse.each do |game|
             = render 'games/finished', game: game, participant: game.participant_for(@player), verbose: true

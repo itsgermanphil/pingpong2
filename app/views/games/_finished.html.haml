@@ -5,19 +5,19 @@
     = form_for game do |f|
       .me{class: game.winner == participant && 'winner'}
         = link_to participant.player do
-          = participant.player.name
+          = player_name participant.player
           - if verbose && game.elo_rating_in(participant)
             (#{elo game.elo_rating_in(participant)})
       .score
         #{game.score_for(participant)}&nbsp;-&nbsp;#{game.score_for(other)}
       .them{class: game.winner == other && 'winner'}
         = link_to other.player do
-          = other.player.name
+          = player_name other.player
           - if verbose && game.elo_rating_in(other)
             (#{elo game.elo_rating_in(other)})
 
   - if verbose
-    %td.round
+    %td.round.hidden-xs
       - if game.round.public
         = link_to "Round #{game.round.round_number}", game.round
       - else
@@ -29,8 +29,8 @@
           = up_arrow
         - else
           = down_arrow
-    %td.gain
+    %td.gain.hidden-xs
       - if game.elo_rating1_in
         = with_sign elo (game.elo_rating_out(participant) - game.elo_rating_in(participant))
-    %td.date
+    %td.date.hidden-xs
       = game.finished_at.to_s(:short)

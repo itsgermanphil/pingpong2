@@ -26,4 +26,20 @@ module ApplicationHelper
     end
   end
 
+  def player_name(player)
+    content_tag(:div, class: 'hidden-xs visible-sm-inline visible-md-inline visible-lg-inline') do
+      player.name
+    end + content_tag(:div, class: 'visible-xs-inline hidden-sm hidden-md hidden-lg') do
+      player.short_name
+    end
+  end
+
+  def round_name(round)
+    if !round.public
+      '1-vs-1'
+    else
+      "Round #{round.round_number}"
+    end
+  end
+
 end
