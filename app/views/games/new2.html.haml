@@ -7,13 +7,13 @@
         = f.label :score1, "#{current_user.name} (#{elo current_user.elo_rating})"
 
       .form-group
-        = f.text_field :score1, width: 3, style: "width:3em"
+        = f.text_field :score1, width: 3, style: "width:3em", type: 'number'
 
       .form-group
         vs
 
       .form-group
-        = f.text_field :score2, width: 3, style: "width:3em"
+        = f.text_field :score2, width: 3, style: "width:3em", type: 'number'
 
       .form-group
         %label.control-label= "#{@player2.name} (#{elo @player2.elo_rating})"

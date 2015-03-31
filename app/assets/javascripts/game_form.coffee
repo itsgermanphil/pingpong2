@@ -6,7 +6,7 @@ $ ->
 
   $('form.edit_game, form.new_game').submit (e) ->
     score1 = $(e.currentTarget)
-    $scores = $(e.currentTarget).find(':text')
+    $scores = $(e.currentTarget).find('input').filter (i, e) -> $(e).attr('type') == 'number'
 
     score1 = $scores.first().val() | 0
     score2 = $scores.last().val() | 0
