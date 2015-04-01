@@ -23,7 +23,7 @@ class Round < ActiveRecord::Base
 
   def self.find_or_build_current_round
     # TODO
-    Round.active.order(:id).last || build_next_round(Round.order(:id).last)
+    Round.tournament.active.order(:id).last || build_next_round(Round.order(:id).last)
   end
 
   def create_games
