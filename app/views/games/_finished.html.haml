@@ -33,4 +33,5 @@
       - if game.elo_rating1_in
         = with_sign elo (game.elo_rating_out(participant) - game.elo_rating_in(participant))
     %td.date.hidden-xs
-      = game.finished_at.to_s(:short)
+      = game.finished_at.in_time_zone('EST').strftime("%a %B %e %l:%M%P")
+
