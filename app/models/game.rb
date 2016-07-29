@@ -1,3 +1,5 @@
+# The low-level unit of play, tracking two players and their scores
+# Games are unplayed while score1 == score2 == nil
 class Game < ActiveRecord::Base
   # touch: true - cache-busting in home#index, round#show, etc
   belongs_to :round, touch: true
